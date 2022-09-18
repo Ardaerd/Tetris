@@ -130,6 +130,7 @@ shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 16
 # index 0 - 6 represent shape
 
 
+# We will loop through these locked positions and modify our blank gird to show these pieces
 def create_grid(locked_positions={}):
     grid = [[(0,0,0) for x in range(10)] for x in range(20)]
     
@@ -139,6 +140,8 @@ def create_grid(locked_positions={}):
             if (j,i) in locked_positions:
                 temp = locked_positions[(i,j)]
                 grid[i][j] = temp
+                
+    return grid
 
 def convert_shape_format(shape):
     pass
@@ -149,8 +152,11 @@ def valid_space(shape, grid):
 def check_lost(positions):
     pass
 
+# Get the random shape 
 def get_shape():
-    pass
+    global shapes, shape_colors
+    
+    return Piece(5,0,random.choice(shapes),shape_colors,shapes)
 
 def draw_text_middle(text, size, color, surface):  
     pass
