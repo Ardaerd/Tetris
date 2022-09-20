@@ -147,7 +147,13 @@ def create_grid(locked_positions={}):
 
 
 def convert_shape_format(shape):
-    pass
+    positions = []
+    format = shape.shape[shape.rotation % len(shape.shape)]
+    
+    for i, line in enumerate(format):
+        row = list(line)
+        
+        
 
 
 def valid_space(shape, grid):
@@ -176,7 +182,7 @@ def draw_grid(surface, grid):
     
     for i in range(len(grid)):
         # Horizontal lines
-        pygame.draw.line(surface, (128,128,128), (sx, sy + i *30), (sx + play_width, sy + i * 30))
+        pygame.draw.line(surface, (128,128,128), (sx, sy + i * 30), (sx + play_width, sy + i * 30))
 
     for j in range(len(grid[i])):
         # Vertical lines
