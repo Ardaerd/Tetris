@@ -1,6 +1,7 @@
 import pygame
 import random
 from Piece import Piece
+from pygame.locals import *
 
 """
 10 x 20 square grid
@@ -126,57 +127,149 @@ T = [['.....',
       '.....']]
 
 shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255),
+                (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
 # index 0 - 6 represent shape
 
 
-# We will loop through these locked positions and modify our blank gird to show these pieces
+# We will loop through these locked positions and modify our blank grid to show these pieces
 def create_grid(locked_positions={}):
-    grid = [[(0,0,0) for x in range(10)] for x in range(20)]
-    
+    grid = [[(0, 0, 0) for x in range(10)] for x in range(20)]
+
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            
-            if (j,i) in locked_positions:
-                temp = locked_positions[(i,j)]
+
+            if (j, i) in locked_positions:
+                temp = locked_positions[(i, j)]
                 grid[i][j] = temp
-                
+
     return grid
+
 
 def convert_shape_format(shape):
     pass
 
+
 def valid_space(shape, grid):
     pass
+
 
 def check_lost(positions):
     pass
 
-# Get the random shape 
+# Get the random shape
+
+
 def get_shape():
     global shapes, shape_colors
-    
-    return Piece(5,0,random.choice(shapes),shape_colors,shapes)
 
-def draw_text_middle(text, size, color, surface):  
+    return Piece(5, 0, random.choice(shapes), shape_colors, shapes)
+
+
+def draw_text_middle(text, size, color, surface):
     pass
-   
-def draw_grid(surface, row, col):
-    pass
+
+
+def draw_grid(surface, grid):
+    surface.fill((0, 0, 0))
+
+    # Tetris title
+    font = pygame.font.SysFont('comicsans', 60)
+    label = font.render('TETRIS', 1, (255, 255, 255))
+
+    surface.blit(label, (top_left_x + play_width /
+                 2 - (label.get_width() / 2), 30))
+
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+
+            pygame.draw.rect(
+                surface, grid[i][j], (top_left_x + j * 30, top_left_y + i * 30, 30, 30), 0)
+     # draw grid and border
+    pygame.draw.rect(surface,(255,0,0), (top_left_x,top_left_y,play_width,play_height), 5)
+    pygame.display.update()
+
 
 def clear_rows(grid, locked):
     pass
 
+
 def draw_next_shape(shape, surface):
     pass
 
-def draw_window(surface):
-    pass
 
-def main():
-    pass
+def draw_window(surface,grid):
+    surface.fill((0, 0, 0))
 
-def main_menu():
-    pass
+    # Tetris title
+    font = pygame.font.SysFont('comicsans', 60)
+    label = font.render('TETRIS', 1, (255, 255, 255))
 
-main_menu()  # start game
+    surface.blit(label, (top_left_x + play_width /
+                 2 - (label.get_width() / 2), 30))
+
+    # draw grid and border
+    draw_grid(surface, grid)
+    pygame.display.update()
+
+
+def main(surface):
+    global grid
+    
+    locked_positions = {}
+    grid = create_grid(locked_positions)
+    
+    change_piece = False
+    run = True
+    current_piece = get_shape()
+    next_piece = get_shape()
+    clock = pygame.time.Clock()
+    fall_time = 0
+    
+    while run:
+        for event in pygame.event.get():
+            
+            if event.type == pygame.QUIT:
+                run == False
+                pygame.display.quit()
+                quit()
+                
+            if event.type == pygame.KEYDOWN:
+                # Going left
+                if event.key == pygame.K_LEFT:
+                    current_piece.x -= 1
+                    # If there is no space for going left, keep going to the current direction
+                    if not valid_space(current_piece,grid):
+                        current_piece.x += 1
+                
+                # Going right
+                elif event.key == pygame.K_RIGHT:
+                    current_piece.x += 1
+                    # If there is no space for going right, keep going to the current direction
+                    if not valid_space(current_piece,grid):
+                        current_piece.x -= 1
+                        
+                # Rotating
+                elif event.key == pygame.K_UP:
+                    # rotate shape
+                    current_piece.rotation = current_piece.rotation + 1 % len(current_piece.shape)
+                    
+                    if not valid_space(current_piece, grid):
+                        current_piece.rotation = current_piece.rotation - 1 % len(current_piece.shape)  
+
+                if event.key == pygame.K_DOWN:
+                    # Move shape down
+                    current_piece.y += 1
+                    
+                    if not valid_space(current_piece, grid):
+                        current_piece.y -= 1
+        draw_window(surface,grid)
+
+
+def main_menu(surface):
+    main(surface)
+
+surface = pygame.display.set_mode((s_width, s_height))
+pygame.display.set_caption('Tetris')
+
+main_menu(surface)  # start game
