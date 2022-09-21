@@ -145,7 +145,7 @@ def create_grid(locked_positions={}):
 
     return grid
 
-
+# Converting the shape form
 def convert_shape_format(shape):
     positions = []
     format = shape.shape[shape.rotation % len(shape.shape)]
@@ -164,16 +164,25 @@ def convert_shape_format(shape):
     return positions
 
 
+# Checking the valid space according to the color ((0,0,0) is mean that it is empty)
 def valid_space(shape, grid):
-    pass
+    accepted_positions = [[(j,i) for j in range(10) if grid[i][j] == (0,0,0)] for i in range(20)]
+    accepted_positions = [j for sub in accepted_positions for j in sub]
 
-
+    formatted = convert_shape_format(shape)
+    
+    for pos in formatted:
+        if pos not in accepted_positions:
+            if pos[1] > -1:
+                return False
+    
+    return True
+        
 def check_lost(positions):
     pass
 
+
 # Get the random shape
-
-
 def get_shape():
     global shapes, shape_colors
 
