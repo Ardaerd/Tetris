@@ -177,9 +177,16 @@ def valid_space(shape, grid):
                 return False
     
     return True
-        
+
+# If the player reached the top of the screen, then game is over 
 def check_lost(positions):
-    pass
+    for pos in positions:
+        x,y = pos
+        
+        if y < 1:
+            return True
+    
+    return False
 
 
 # Get the random shape
