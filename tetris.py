@@ -331,6 +331,10 @@ def main(surface):
             change_piece = False
             
         draw_window(surface,grid)
+        
+        # Check if user lost
+        if check_lost(locked_positions):
+            run = False
 
 
 def main_menu(surface):
