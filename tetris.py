@@ -216,8 +216,23 @@ def clear_rows(grid, locked):
     pass
 
 
+# Displaying the next comming shape on the right side of the screen
 def draw_next_shape(shape, surface):
-    pass
+    font = pygame.font.SysFont('comicsans',30)
+    label = font.render('Next Shape',1,(255,255,255))
+    
+    sx = top_left_x + play_width + 50
+    sy = top_left_y + play_height/2 - 100
+    format = shape.shape[shape.rotation % len(shape.shape)]
+    
+    for i, line in enumerate(format):
+        row = list(line)
+        
+        for j, column in enumerate(row):
+            if column == '0':
+                pygame.draw.rect(surface, shape.color, (sx + j*30, sy + i*30,30,30),0)
+    
+    surface.blit(label, (sx + 10, sy -30))
 
 
 def draw_window(surface,grid):
@@ -240,7 +255,6 @@ def draw_window(surface,grid):
 
     # draw grid and border
     draw_grid(surface, grid)
-    pygame.display.update()
 
 
 def main(surface):
@@ -303,7 +317,7 @@ def main(surface):
                     if not valid_space(current_piece, grid):
                         current_piece.rotation = current_piece.rotation - 1 % len(current_piece.shape)  
 
-                if event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN:
                     # Move shape down
                     current_piece.y += 1
                     
@@ -331,6 +345,8 @@ def main(surface):
             change_piece = False
             
         draw_window(surface,grid)
+        draw_next_shape(next_piece,surface)
+        pygame.display.update()
         
         # Check if user lost
         if check_lost(locked_positions):
